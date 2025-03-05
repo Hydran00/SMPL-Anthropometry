@@ -14,7 +14,7 @@ from visualize import Visualizer
 from landmark_definitions import *
 from joint_definitions import *
 
-
+import open3d
 
 def set_shape(model, shape_coefs):
     '''
@@ -471,32 +471,97 @@ class MeasureBody():
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Measure body models.')
-    parser.add_argument('--measure_neutral_smpl_with_mean_shape', action='store_true',
-                        help="Measure a mean shape smpl model.")
-    parser.add_argument('--measure_neutral_smplx_with_mean_shape', action='store_true',
-                        help="Measure a mean shape smplx model.")
-    args = parser.parse_args()
+    # parser.add_argument('--measure_neutral_smpl_with_mean_shape', action='store_true',
+    #                     help="Measure a mean shape smpl model.")
+    # parser.add_argument('--measure_neutral_smplx_with_mean_shape', action='store_true',
+    #                     help="Measure a mean shape smplx model.")
+    # parser.add_argument('--path', action='store_true',
+    #                     help="Measure a mean shape smplx model.")
+    # args = parser.parse_args()
 
-    model_types_to_measure = []
-    if args.measure_neutral_smpl_with_mean_shape:
-        model_types_to_measure.append("smpl")
-    elif args.measure_neutral_smplx_with_mean_shape:
-        model_types_to_measure.append("smplx")
+    # model_types_to_measure = []
+    # if args.measure_neutral_smpl_with_mean_shape:
+    #     model_types_to_measure.append("smpl")
+    # elif args.measure_neutral_smplx_with_mean_shape:
+    #     model_types_to_measure.append("smplx")
+    model_type = "smpl"
 
-    for model_type in model_types_to_measure:
-        print(f"Measuring {model_type} body model")
-        measurer = MeasureBody(model_type)
+    
 
-        betas = torch.zeros((1, 10), dtype=torch.float32)
-        measurer.from_body_model(gender="NEUTRAL", shape=betas)
+    # measurer.from_body_model(gender="NEUTRAL", shape=betas)
+    mesh = open3d.io.read_triangle_mesh(os.path.expanduser("~/")+"SKEL_WS/ros2_ws/src/experiments/experiment_1/giovanni/beta_opt.obj")
+    vertices = torch.tensor(np.asarray(mesh.vertices), dtype=torch.float32)
+    measurer = MeasureBody(model_type)
+    measurer.from_verts(vertices)
+    measurement_names = measurer.all_possible_measurements
+    measurer.measure(measurement_names)
+    measurement_names = measurer.all_possible_measurements
+    measurer.measure(measurement_names)
+    print("Measurements")
+    pprint(measurer.measurements)
 
-        measurement_names = measurer.all_possible_measurements
-        measurer.measure(measurement_names)
-        print("Measurements")
-        pprint(measurer.measurements)
+    # measurer.label_measurements(STANDARD_LABELS)
+    # print("Labeled measurements")
+    # pprint(measurer.labeled_measurements)
 
-        measurer.label_measurements(STANDARD_LABELS)
-        print("Labeled measurements")
-        pprint(measurer.labeled_measurements)
+    # measurer.visualize()
 
-        measurer.visualize()
+
+    # base_path = os.path.expanduser("~/")+"SKEL_WS/ros2_ws/src/experiments/experiment_1/mean_var_luca/ms"
+    # measures_chest = []
+    # measures_waist = []
+    # measures_shoulder_crotch_height = []
+    # for i in range(1,3):
+    #     path = base_path + str(i) + "/beta_opt.obj"
+    #     mesh = open3d.io.read_triangle_mesh(path)
+        
+    #     print(f"Measuring smpl body model from {path}")
+        
+    #     measurer = MeasureBody(model_type)
+    #     # betas = torch.zeros((1, 10), dtype=torch.float32)
+
+    #     # measurer.from_body_model(gender="NEUTRAL", shape=betas)
+    #     vertices = torch.tensor(np.asarray(mesh.vertices), dtype=torch.float32)
+    #     measurer.from_verts(vertices)
+    #     measurement_names = measurer.all_possible_measurements
+    #     measurer.measure(measurement_names)
+    #     print("Measurements")
+    #     pprint(measurer.measurements)
+
+    #     with open(base_path + str(i) + "/measurements.txt", "w") as f:
+    #         f.write(str(measurer.measurements))
+        
+    #     measure_chest = measurer.measurements["chest circumference"]
+    #     measures_chest.append(measure_chest)
+
+    #     measure_waist = measurer.measurements["waist circumference"]
+    #     measures_waist.append(measure_waist)
+
+    #     measure_shoulder_crotch_height = measurer.measurements["shoulder to crotch height"]
+    #     measures_shoulder_crotch_height.append(measure_shoulder_crotch_height)
+
+    # print(measures_shoulder_crotch_height)
+    #     # measurer.visualize()
+    # print(measures_shoulder_crotch_height)
+    
+    # print("Mean shoulder to crotch height: ", np.mean(measures_shoulder_crotch_height))
+    # print("Mean chest circumference: ", np.mean(measures_chest))
+    # print("Mean waist circumference: ", np.mean(measures_waist))
+    # # measurer.visualize() 
+    # print("Var chest circumference: ", np.var(measures_chest))
+    # print("Var waist circumference: ", np.var(measures_waist))
+    # print("Var shoulder to crotch height: ", np.var(measures_shoulder_crotch_height))
+
+    # with open(base_path[:-2] + "mean_var.txt", "w") as f:
+    #     f.write("Mean chest circumference: " + str(np.mean(measures_chest)) + "\n")
+    #     f.write("Mean waist circumference: " + str(np.mean(measures_waist)) + "\n")
+    #     f.write("Mean shoulder to crotch height: " + str(np.mean(measures_shoulder_crotch_height) + "\n"))
+    #     f.write("Var chest circumference: " + str(np.var(measures_chest)) + "\n")
+    #     f.write("Var waist circumference: " + str(np.var(measures_waist)) + "\n")
+    #     f.write("Var shoulder to crotch height: " + str(np.var(measures_shoulder_crotch_height) + "\n"))
+
+
+        # measurer.label_measurements(STANDARD_LABELS)
+        # print("Labeled measurements")
+        # pprint(measurer.labeled_measurements)
+        

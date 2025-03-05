@@ -3,3 +3,4 @@ __pycache__/*
 data/*/*.pkl
 data/*/point_segmentation_meshcapade.json
 visualizeMeasurements (EXPERIMENTING).ipynb
+data/
