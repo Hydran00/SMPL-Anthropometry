@@ -45,6 +45,11 @@ MEASUREMENT_TYPES = {
         "calf left circumference": MeasurementType.CIRCUMFERENCE,
         "ankle left circumference": MeasurementType.CIRCUMFERENCE,
         "shoulder breadth": MeasurementType.LENGTH,
+
+        "arm length (shoulder to elbow)": MeasurementType.LENGTH,
+        "arm length (spine to wrist)": MeasurementType.LENGTH,
+        "crotch height": MeasurementType.LENGTH,
+        "Hip circumference max height": MeasurementType.LENGTH,
     }
 
 class SMPLMeasurementDefinitions():
@@ -69,8 +74,6 @@ class SMPLMeasurementDefinitions():
        used for finding the measurement. The body parts are defined by the SMPL 
        face segmentation.
     '''
-
-    possible_measurements = MEASUREMENT_TYPES.keys()
     
     LENGTHS = {"height": 
                     (SMPL_LANDMARK_INDICES["HEAD_TOP"], 
@@ -95,6 +98,31 @@ class SMPLMeasurementDefinitions():
                 "shoulder breadth": 
                     (SMPL_LANDMARK_INDICES["LEFT_SHOULDER"], 
                      SMPL_LANDMARK_INDICES["RIGHT_SHOULDER"]
+                    ),
+                "arm length (shoulder to elbow)":
+                    (
+                    #  SMPL_LANDMARK_INDICES["LEFT_SHOULDER"], 
+                    #  SMPL_LANDMARK_INDICES["LEFT_ELBOW"]
+                    SMPL_LANDMARK_INDICES["Rt. Acromion"],
+                    SMPL_LANDMARK_INDICES["Rt. Humeral Lateral Epicn"]
+                    ),
+                "crotch height":
+                    (SMPL_LANDMARK_INDICES["CROTCH"],
+                     SMPL_LANDMARK_INDICES["HEELS"]
+                    ),
+                "Hip circumference max height":
+                    (SMPL_LANDMARK_INDICES["PUBIC_BONE"],
+                     SMPL_LANDMARK_INDICES["HEELS"]
+                    ),
+                # FIXME: implement geodesic distance for this measurement
+                "arm length (spine to wrist)": 
+                    (
+                    #  SMPL_LANDMARK_INDICES["SHOULDER_TOP"], 
+                    #  SMPL_LANDMARK_INDICES["LEFT_WRIST"]
+                        SMPL_LANDMARK_INDICES["Cervicale"],
+                        SMPL_LANDMARK_INDICES["Rt. Acromion"],
+                        SMPL_LANDMARK_INDICES["Rt. Humeral Lateral Epicn"],
+                        SMPL_LANDMARK_INDICES["Rt. Ulnar Styloid"]
                     ),
                }
 
@@ -136,6 +164,8 @@ class SMPLMeasurementDefinitions():
                                     "JOINTS":["pelvis","spine3"]},      
                     
                     }
+    
+    possible_measurements = list(LENGTHS.keys()) + list(CIRCUMFERENCES.keys())
 
     CIRCUMFERENCE_TO_BODYPARTS = {
         "head circumference": "head",
@@ -175,8 +205,6 @@ class SMPLXMeasurementDefinitions():
        used for finding the measurement. The body parts are defined by the SMPL 
        face segmentation.
     '''
-
-    possible_measurements = MEASUREMENT_TYPES.keys()
     
     LENGTHS = {"height": 
                     (SMPLX_LANDMARK_INDICES["HEAD_TOP"], 
@@ -242,6 +270,8 @@ class SMPLXMeasurementDefinitions():
                                     "JOINTS":["pelvis","spine3"]},      
                     
                     }
+    
+    possible_measurements = list(LENGTHS.keys()) + list(CIRCUMFERENCES.keys())
 
     CIRCUMFERENCE_TO_BODYPARTS = {
         "head circumference": "head",
